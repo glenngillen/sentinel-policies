@@ -1,0 +1,9 @@
+import "tfplan"
+
+main = rule {
+  all tfplan.resources.aws_cloudfront_distribution as _, distributions {
+    all distributions as _, distribution {
+      distribution.default_cache_behavior.viewer_protocol_policy is not "allow-all"
+    }
+  }
+}
