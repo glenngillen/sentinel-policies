@@ -1,0 +1,26 @@
+import "tfplan"
+
+mandatory_tags = [
+  "environment",
+  "project",
+]
+
+has_mandatory_tags = func(resource) {
+  validated = true
+  if (length(resource.applied.tags) else -1 >= 0) {
+    validated = all mandatory_tags as tag {
+      resource.applied.tags contains tag
+    }
+  }
+  return validated
+}
+
+main = rule {
+  all tfplan.resources as _, resource_types {
+    all resource_types as _, resources {
+      all resources as _, resource {
+        has_mandatory_tags(resource)
+      }
+    }
+  }
+}
